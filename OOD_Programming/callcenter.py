@@ -18,43 +18,62 @@ class CallCenter():
 
     Needs a list of respondants, a manager, and a director to function properly
     '''
-    def __init__(self) -> None:
-        # individual queue for each employee type
+    def __init__(self, *employees) -> None:
+        '''creates the call queue and adds employees to it if they are available'''
         self.callqueue = CallQueue()
+        for employee in employees:
+            if employee.is_available():
+                self.callqueue.add_employee(employee=employee)
 
     def addEmployee(self, employee):
         self.callqueue.add_employee(employee)
 
-
+from collections import deque
 class CallQueue():
     '''
-    A queue of respondants list, manager, and director
+    A queue of respondants , manager, and director queues
     '''
     def __init__(self) -> None:
-        repondants = []
+        # initialize a dequeue for each type 
+        self.respondants = deque([])
+        self.managers = deque([])
+        self.directors = deque([])
+        # master array of queues where we check left to right each time
+        self.masterqueue = [
+            self.respondants,
+            self.managers,
+            self.directors,
+        ]
 
     def add_employee(self, employee):
+        if not employee.is_available(): raise self.EmployeeUnavailableError
+        # else, add the employee to the appropriate queue:
+        if isinstance(employee, Respondant):
+            self.respondants.append(employee)
+        elif isinstance(employee, Manager):
+            self.managers.append(employee)
+        elif isinstance(employee, Director):
+            self.directors.append(employee)
+
+    def add_employees(self, *employees):
+        for employee in employees:
+            self.add_employee(employee)
+
+    def __str__(self) -> str:
+        res = ""
+        for queue in self.masterqueue:
+            for employee in queue:
+                res+= employee.type + " " + employee.name + " ==> "
+        return res + "END"
+
+    class EmployeeUnavailableError(Exception):
         pass
 
-class Employee(ABC):
+class Employee():
     def __init__(self, name) -> None:
         self.name = name
         self.available = True
-    def __str__(self) -> str:
-        return self.name + " available: " + str(self.available)
-    @abstractmethod
-    def receive_call(self) -> None:
-        pass
-    @abstractmethod
-    def is_available(self) -> bool:
-        pass
-    @abstractmethod
-    def set_availability(self, available) -> None:
-        pass
-
-class Respondant(Employee):
-    def __init__(self, name):
-        super().__init__(name)
+        self.type = "General Employee"
 
     def receive_call(self) -> None:
         self.available = False
@@ -66,13 +85,43 @@ class Respondant(Employee):
         self.available = available
          
     def __str__(self) -> str:
-        return "Respondant " + super().__str__()
+        return self.type + " " + self.name + " available: " + str(self.available)
 
-# def Manager(Employee):
-#     pass
+class Respondant(Employee):
+    def __init__(self, name):
+        super().__init__(name)
+        self.type = "Respondant"
+         
+    def __str__(self) -> str:
+        return super().__str__()
 
-# def Director(Employee):
-#     pass
+class Manager(Employee):
+    def __init__(self, name):
+        super().__init__(name)
+        self.type = "Manager"
+         
+    def __str__(self) -> str:
+        return super().__str__()
 
-p1 = Respondant("Bill")
-print(p1)
+class Director(Employee):
+    def __init__(self, name):
+        super().__init__(name)
+        self.type = "Director"
+         
+    def __str__(self) -> str:
+        return super().__str__()
+
+
+if __name__ == "__main__":
+    r1 = Respondant("Adam")
+    r2 = Respondant("Bill")
+    r3 = Respondant("Cameron")
+    m1 = Manager("Piero")
+    d1 = Director("Jorge")
+    daCrew = [r1, r2, r3, m1, d1]
+    for r in daCrew:
+        print(r)
+
+    myQueue = CallQueue()
+    myQueue.add_employees(*daCrew)
+    print(myQueue)
