@@ -1,6 +1,9 @@
 '''
 Call Center
 
+Piero Orderique
+23 Jan 2021
+
 3 levels of employee: respondent, manager, and director
 An incoming call must be allocated to a free respondent. 
     if none are available to take the call, it goes to a manager
@@ -10,6 +13,8 @@ An incoming call must be allocated to a free respondent.
 Design the classes and ADT for this problem. 
 Implement a method called dispatchCall() which assigns a call to the first available employee
 '''
+from collections import deque
+
 class CallCenter():
     '''
     Creates a call center
@@ -18,20 +23,39 @@ class CallCenter():
     '''
     def __init__(self, *employees) -> None:
         '''creates the call queue and adds employees to it if they are available'''
+        self.all_employees = []
         self.callqueue = CallQueue()
         for employee in employees:
+            self.all_employees.append(employee)
             if employee.is_available():
                 self.callqueue.add_employee(employee=employee)
 
     def add_employee(self, employee):
-        self.callqueue.add_employee(employee)
+        if employee.is_available():
+            self.all_employees.append(employee)
+            self.callqueue.add_employee(employee)
 
     def add_employees(self, *employees):
         for employee in employees:
             if employee.is_available():
+                self.all_employees.append(employee)
                 self.callqueue.add_employee(employee=employee)
 
-from collections import deque
+    def dispatchCall(self, call):
+        ''' assign a call to first available employee '''
+        employee = self.callqueue.pop_employee()
+        employee.call = call
+        return employee
+
+    def __str__(self) -> str:
+        rep = ""
+        for employee in self.all_employees:
+            if employee.call:
+                rep += employee.name + " on call " + str(employee.call.id) + "\n"
+            else:
+                rep += str(employee) + "\n"
+        return rep
+
 class CallQueue():
     '''
     A queue of respondants , manager, and director queues
@@ -88,20 +112,31 @@ class CallQueue():
     class EmployeeUnavailableError(Exception):
         pass
 
+class Call():
+    def __init__(self, id) -> None:
+        self.id = id
+
+    def __str__(self) -> str:
+        return "CALLER ID: " + str(self.id)
+
 class Employee():
     def __init__(self, name) -> None:
         self.name = name
         self.available = True
         self.type = "General Employee"
+        self.call = None
 
-    def receive_call(self) -> None:
+    def receive_call(self, call:Call) -> None:
         self.available = False
+        self.call = call
 
     def is_available(self) -> bool:
         return self.available
 
     def set_availability(self, available) -> None:
         self.available = available
+        if available:
+            self.call = None
          
     def __str__(self) -> str:
         return self.type + " " + self.name + " available: " + str(self.available)
@@ -138,16 +173,25 @@ if __name__ == "__main__":
     m1 = Manager("Piero")
     d1 = Director("Jorge")
     daCrew = [r1, r2, r3, m1, d1]
-    for r in daCrew:
-        print(r)
+    # for r in daCrew:
+    #     print(r)
+    # myQueue = CallQueue()
+    # myQueue.add_employees(*daCrew)
+    # print(myQueue.pop_employee())
+    # print(myQueue.pop_employee())
+    # print(myQueue.pop_employee())
+    # print(myQueue.pop_employee())
+    # print(myQueue.pop_employee())
 
-    myQueue = CallQueue()
-    myQueue.add_employees(*daCrew)
-    print(myQueue)
-    print(myQueue.pop_employee())
-    print(myQueue.pop_employee())
-    print(myQueue.pop_employee())
-    print(myQueue.pop_employee())
-    print(myQueue.pop_employee())
-
-    print(myQueue)
+    # final testing
+    ebay_customer_services = CallCenter()
+    ebay_customer_services.add_employees(*daCrew)
+    print(ebay_customer_services)
+    # assign calls in order
+    ebay_customer_services.dispatchCall(Call(7066077066))
+    ebay_customer_services.dispatchCall(Call(6789998212)) 
+    ebay_customer_services.dispatchCall(Call(1118675309))
+    print(ebay_customer_services)
+    ebay_customer_services.dispatchCall(Call(1800588267))
+    ebay_customer_services.dispatchCall(Call(4044044044))
+    print(ebay_customer_services)
