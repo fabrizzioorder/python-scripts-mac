@@ -10,8 +10,6 @@ An incoming call must be allocated to a free respondent.
 Design the classes and ADT for this problem. 
 Implement a method called dispatchCall() which assigns a call to the first available employee
 '''
-from abc import ABC, abstractmethod
-
 class CallCenter():
     '''
     Creates a call center
@@ -25,8 +23,13 @@ class CallCenter():
             if employee.is_available():
                 self.callqueue.add_employee(employee=employee)
 
-    def addEmployee(self, employee):
+    def add_employee(self, employee):
         self.callqueue.add_employee(employee)
+
+    def add_employees(self, *employees):
+        for employee in employees:
+            if employee.is_available():
+                self.callqueue.add_employee(employee=employee)
 
 from collections import deque
 class CallQueue():
@@ -58,6 +61,22 @@ class CallQueue():
     def add_employees(self, *employees):
         for employee in employees:
             self.add_employee(employee)
+
+    def pop_employee(self):
+        '''iterate trough master queue and pop first one we can'''
+        for queue in self.masterqueue:
+            if len(queue):
+                # pop from queue if its not empty
+                employee = queue.popleft()
+                employee.set_availability(False)
+                return employee
+        # else all are empty so raise error
+        raise self.EmployeeUnavailableError("Queue is empty")
+
+    def employee_available(self):
+        ''' like isNotEmpty method '''
+        # there will always be an employee available so long as there is a director available
+        return bool(len(self.directors))
 
     def __str__(self) -> str:
         res = ""
@@ -124,4 +143,11 @@ if __name__ == "__main__":
 
     myQueue = CallQueue()
     myQueue.add_employees(*daCrew)
+    print(myQueue)
+    print(myQueue.pop_employee())
+    print(myQueue.pop_employee())
+    print(myQueue.pop_employee())
+    print(myQueue.pop_employee())
+    print(myQueue.pop_employee())
+
     print(myQueue)
