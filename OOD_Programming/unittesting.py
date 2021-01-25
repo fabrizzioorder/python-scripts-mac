@@ -49,10 +49,11 @@ class TestDequeue(unittest.TestCase):
         self.d.add("piero")
         self.d.add("fab")
         self.d.add("orderique")
-        first = self.d.pop_first()
+        self.d.pop_first()
         self.assertEqual(2, len(self.d))
+        first = self.d.pop_first()
         last = self.d.pop_last()
-        self.assertEqual(first.data, "piero")
+        self.assertEqual(first.data, "fab")
         self.assertEqual(last.data, "orderique")
 
 if __name__ == "__main__":
