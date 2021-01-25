@@ -23,7 +23,7 @@ class Dequeue():
         self.first = None
         self.last = None
         self.length = 0
-    
+
     def add(self, data):
         ''' pushes the data into queue '''
         t = self.QueueNode(data)
@@ -47,24 +47,35 @@ class Dequeue():
         if n == self.last:
             self.first = None
             self.last = None
-            return n
+            return n.data
         else: # else there are nodes in between
             self.first.next.prev = None
             self.first = self.first.next
-            return n 
+            return n.data
 
     def pop_last(self):
         if not self.last: raise self.EmptyDequeueError
         self.length -= 1
         n = self.last
-        if n == self.first: 
+        if n == self.first:
             self.first = None
             self.last = None
-            return n
+            return n.data
         else: # else there are nodes in between
             self.last.prev.next = None
             self.last = self.last.prev
-            return n
+            return n.data
+
+    def is_empty(self):
+        return not bool(self.first)
 
     def __len__(self):
         return self.length
+
+    def __str__(self):
+        rep = ""
+        n = self.first
+        while n:
+            rep += str(n.data) + " => "
+            n = n.next
+        return rep + "END"
