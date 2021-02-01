@@ -79,3 +79,19 @@ class Dequeue():
             rep += str(n.data) + " => "
             n = n.next
         return rep + "END"
+
+class TreeNode():
+    def __init__(self, data) -> None:
+        self.data = data
+        self.left = None
+        self.right = None
+        self.visited = False
+
+    def print_tree(self):
+        '''uses DFS to print'''
+        print(self)
+        if self.left: self.left.print_tree()
+        if self.right: self.right.print_tree()
+
+    def __str__(self) -> str:
+        return str(self.data)
