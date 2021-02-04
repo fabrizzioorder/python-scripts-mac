@@ -82,5 +82,31 @@ def perm(s:str):
     
     return res
 
+''' 8.9 Parens '''
+# generate list of all valid parens of length n
+def parens(n):
+    if n == 1: return ["()"]
+    
+    res = []
+    prevs = parens(n-1)
+
+    single = "()"*(n-1) # dont want to regnerate both
+    single_seen = False
+
+    for perm in prevs:
+        # place every perm inside a ()
+        res.append("("+perm+")")
+        # place () before and after
+        if perm == single:
+            if not single_seen:
+                res.append("()"+perm)
+                single_seen = True
+            else: 
+                continue
+        else:
+            res.extend(["()"+perm, perm+"()"])
+    
+    return res
+
 if __name__ == "__main__":
-    print(perm("abc"))
+    print(parens(3))
