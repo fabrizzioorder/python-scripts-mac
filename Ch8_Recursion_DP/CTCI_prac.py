@@ -66,12 +66,21 @@ def hanoi(start:list , mid:list, end:list, n:int):
         end.append(start.pop())
         hanoi(mid, start, end, n-1)
     
+''' 8.7 Permutations w/o Duplicates '''
+def perm(s:str):
+    res = []
+    if len(s) == 1: 
+        return [s]
 
+    char = s[-1] # extra char
+    s = s[:len(s)-1] # remove that char
+    subs = perm(s) # get the sub permutations
+
+    for p in subs:
+        for idx in range(len(p)+1):
+            res.append(p[:idx] + char + p[idx:])
+    
+    return res
 
 if __name__ == "__main__":
-    start = [3, 2, 1]
-    mid = []
-    end = []
-    print(start, mid, end, "\n")
-    hanoi(start, mid, end, len(start))
-    print(start, mid, end)
+    print(perm("abc"))
