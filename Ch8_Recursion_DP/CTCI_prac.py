@@ -30,8 +30,48 @@ def move(grid):
     # go down 
     pass
 
-''' 8.3 Magic Index ''' 
+''' 8.4 Power Set ''' 
+# fix later. You can't hash a list or set
+def powersets(s:set) -> list:
+    res = set()
+    if len(s) == 0: return set(set())
+    if len(s) == 1: set([s, set()])
+    
+    extra = s.pop() # pop random
+    ps = powersets(s) # get rest of power sets
+    res.extend(ps)
+
+    for sett in ps:
+        sett.add(extra)
+        res.append(sett)
+
+    return res
+
+''' 8.5 Recursive Multiply '''
+def mul(a, b):
+    return multi(a, b, res=0)
+
+def multi(a, b, res=0):
+    if b == 0: return res
+    res += a
+    b -= 1
+    return multi(a, b, res)
+
+''' 8.6 Towers of Hanoi '''
+def hanoi(start:list , mid:list, end:list, n:int):
+    if n == 1: 
+        end.append(start.pop())
+    else:
+        hanoi(start, end, mid, n-1)
+        end.append(start.pop())
+        hanoi(mid, start, end, n-1)
+    
 
 
 if __name__ == "__main__":
-    pass
+    start = [3, 2, 1]
+    mid = []
+    end = []
+    print(start, mid, end, "\n")
+    hanoi(start, mid, end, len(start))
+    print(start, mid, end)
