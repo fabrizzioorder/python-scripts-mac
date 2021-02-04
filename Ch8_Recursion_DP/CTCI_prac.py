@@ -108,5 +108,25 @@ def parens(n):
     
     return res
 
+''' 8.11 Coins '''
+# count ways to make n coins
+# this is so bad, I'll try to fix this :/
+# not working
+def ways(n):
+    total = 0
+    if n == 0: return 0
+    if n == 1: return 1
+    if n == 5: return 2
+    if n == 10: return 4
+    if n > 1: 
+        total += ways(n-1)
+        if n > 5: 
+            total += ways(n-5)
+            if n >= 10: 
+                total += ways(n-10)
+                if n >= 25:
+                    total += ways(n-25)
+    return total
+
 if __name__ == "__main__":
-    print(parens(3))
+    print(ways(6))
