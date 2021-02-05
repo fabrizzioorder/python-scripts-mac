@@ -128,6 +128,22 @@ def partition(arr, left, right):
 
     return left
 
+'''
+RADIX SORT
+Runtime: O(kn)
+
+Sorting Algo for integers (and some others) that takes advantage of the
+fact that integers have a finitte number of bits.
+We iterate through each digit of the number, grouping numbers by each digit.
+
+Given array of ints, we might first sort by the first digit, so that the 0s
+are grouped together. Then, we sort each of these groupings by the next digit.
+We repeat this process sorting by each subsequent digit until array is sorted.
+
+Average case runtime is O(kn) where k = # of passes of the sorting algorithm
+'''
+# TODO: FIND IMPLEMENTATION
+
 ###############    TESTING    ################
 if __name__ == "__main__":
     quick_sort(test1)
